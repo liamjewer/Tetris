@@ -28,7 +28,9 @@ const float BOARD_X_UNIT (1.0f/BOARD_WIDTH);
 int board[BOARD_WIDTH][BOARD_HEIGHT] = {0};
 
 Pattern active = PATTERNS[0];
-int activePos[2] = {0,0};
+int activePos[2] = {4,20};
+
+int ticks = 0;
 
 float GetBoardX(int boardX){
     return (boardX/(float)BOARD_WIDTH) - 0.5;
@@ -42,7 +44,27 @@ void Tick() {
 }
 
 void FixedTick() {
-
+    if(ticks%10 == 0){
+        bool testBelow = false;
+        for(int i = 0; i < 4; i++){
+            if(board[activePos[0] + active.pattern[i][0]][activePos[1] + active.pattern[i][1] - 1] != 0){
+                testBelow = true;
+                break;
+            }
+        }
+        if(activePos[1] <= 0 || testBelow){
+            //set the squares in place on the board
+            for(int i = 0; i < 4; i++){
+                board[activePos[0] + active.pattern[i][0]][activePos[1] + active.pattern[i][1]] = active.colour + 1;
+            }
+            //reset active to new random and to the top
+            active = PATTERNS[rand() % 7];
+            activePos[0] = 4;
+            activePos[1] = 20;
+        }
+        activePos[1]--;
+    }
+    ticks++;
 }
 
 void LateTick() {
