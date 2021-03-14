@@ -80,9 +80,9 @@ void Render() {
 
 void Init(){
     glLineWidth(4);
+    
     srand (time(NULL));
-    int random = rand() % 7;
-    active = PATTERNS[6];
+    active = PATTERNS[rand() % 7];
 }
 
 
