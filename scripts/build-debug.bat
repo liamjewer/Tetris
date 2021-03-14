@@ -1,0 +1,1 @@
+g++ ../*.cpp -o ../.out/builds/debug.exe -lgdi32 -lglfw3dll -lopengl32

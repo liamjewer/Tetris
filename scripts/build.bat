@@ -1,0 +1,1 @@
+g++ ../*.cpp -o ../.out/builds/Tetris.exe -lgdi32 -lglfw3dll -lopengl32 -mwindows
