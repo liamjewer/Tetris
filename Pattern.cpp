@@ -1,6 +1,6 @@
 #include "Pattern.h"
 
-Pattern::Pattern(int colour, const bool orientation[4][4][4]){
+Pattern::Pattern(int colour, const int pattern[4][2]){
       this -> colour = colour;
-      this -> orientation = orientation;
+      this -> pattern = pattern;
 };

@@ -5,7 +5,7 @@
 
 #include <iostream>
 #include "Pattern.h"
-#include "Orientations.h"
+#include "Patterns.h"
 
 #define BOARD_WIDTH 10
 #define BOARD_HEIGHT 20
@@ -20,9 +20,12 @@ const float COLOURS[7][3] = {
     {1.0f, 1.0f, 0.4f},
     {1.0f, 0.4f, 0.2f},
 };
-const Pattern PATTERNS[7] = {Pattern(0, Orientations::SQUARE_ORIENTATION), Pattern(1, Orientations::LINE_ORIENTATION), Pattern(2, Orientations::T_ORIENTATION), Pattern(3, Orientations::L_ORIENTATION), Pattern(4, Orientations::RL_ORIENTATION), Pattern(5, Orientations::S_ORIENTATION), Pattern(6, Orientations::Z_ORIENTATION)};
+const Pattern PATTERNS[7] = {Pattern(0, Patterns::SQUARE_ORIENTATION), Pattern(1, Patterns::LINE_ORIENTATION), Pattern(2, Patterns::T_ORIENTATION), Pattern(3, Patterns::L_ORIENTATION), Pattern(4, Patterns::RL_ORIENTATION), Pattern(5, Patterns::S_ORIENTATION), Pattern(6, Patterns::Z_ORIENTATION)};
 
 int board[BOARD_WIDTH][BOARD_HEIGHT] = {0};
+
+//Pattern active;
+//int activePos[2];
 
 void Tick() {
     
