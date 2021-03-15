@@ -26,11 +26,13 @@ const float BOARD_Y_UNIT (2.0f/BOARD_HEIGHT);
 const float BOARD_X_UNIT (1.0f/BOARD_WIDTH);
 
 int board[BOARD_WIDTH][BOARD_HEIGHT] = {0};
+bool fast = false;
 
 Pattern active = PATTERNS[0];
 int activePos[2] = {4,20};
 
 int ticks = 0;
+int speed = 30;
 
 float GetBoardX(int boardX){
     return (boardX/(float)BOARD_WIDTH) - 0.5;
@@ -44,7 +46,7 @@ void Tick() {
 }
 
 void FixedTick() {
-    if(ticks%10 == 0){
+    if(ticks%speed == 0 || (fast && ticks%(speed/4) == 0)){
         bool testBelow = false;
         for(int i = 0; i < 4; i++){
             if(board[activePos[0] + active.pattern[i][0]][activePos[1] + active.pattern[i][1] - 1] != 0){
@@ -65,6 +67,32 @@ void FixedTick() {
         activePos[1]--;
     }
     ticks++;
+}
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    if((key == GLFW_KEY_D && action == GLFW_PRESS) && activePos[0] < BOARD_WIDTH - active.getWidth()){
+        bool testRight = false;
+        for(int i = 0; i < 4; i++){
+            if(board[activePos[0] + active.pattern[i][0] + 1][activePos[1] + active.pattern[i][1]] != 0){
+                testRight = true;
+                break;
+            }
+        }
+        if(!testRight)
+            activePos[0]++;
+    }
+    if((key == GLFW_KEY_A && action == GLFW_PRESS) && activePos[0] > 0){
+        bool testLeft = false;
+        for(int i = 0; i < 4; i++){
+            if(board[activePos[0] + active.pattern[i][0] - 1][activePos[1] + active.pattern[i][1]] != 0){
+                testLeft = true;
+                break;
+            }
+        }
+        if(!testLeft)
+            activePos[0]--;
+    }
+    if((key == GLFW_KEY_S && action == GLFW_PRESS) || (key == GLFW_KEY_S && action == GLFW_RELEASE)) fast = !fast;
 }
 
 void LateTick() {
@@ -113,6 +141,9 @@ INT WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, INT nC
     Jewer2D::backgroundR = 0.1f;
     Jewer2D::backgroundG = 0.1f;
     Jewer2D::backgroundB = 0.1f;
+
+    glfwSetKeyCallback(Jewer2D::window, key_callback);
+
     Init();
     Jewer2D::BeginLoop();
 

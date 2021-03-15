@@ -5,4 +5,5 @@ struct Pattern{
 
       int colour;
       const int (*pattern)[2];
+      int getWidth();
 };
