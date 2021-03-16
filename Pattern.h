@@ -1,9 +1,11 @@
 #pragma once
 
 struct Pattern{
-      Pattern(int, const int [4][2]);
+      Pattern(int, const char [4][4][2]);
 
       int colour;
-      const int (*pattern)[2];
+      int rotation;
+      const char (*pattern)[4][2];
       int getWidth();
+      void rotate();
 };

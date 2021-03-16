@@ -19,7 +19,7 @@ const float COLOURS[7][3] = {
     {0.4f, 1.0f, 1.0f},
     {1.0f, 0.4f, 1.0f},
     {1.0f, 1.0f, 0.4f},
-    {1.0f, 0.4f, 0.2f},
+    {1.0f, 0.4f, 0.2f}
 };
 const Pattern PATTERNS[7] = {Pattern(0, Patterns::SQUARE_ORIENTATION), Pattern(1, Patterns::LINE_ORIENTATION), Pattern(2, Patterns::T_ORIENTATION), Pattern(3, Patterns::L_ORIENTATION), Pattern(4, Patterns::RL_ORIENTATION), Pattern(5, Patterns::S_ORIENTATION), Pattern(6, Patterns::Z_ORIENTATION)};
 const float BOARD_Y_UNIT (2.0f/BOARD_HEIGHT);
@@ -49,15 +49,15 @@ void FixedTick() {
     if(ticks%speed == 0 || (fast && ticks%(speed/4) == 0)){
         bool testBelow = false;
         for(int i = 0; i < 4; i++){
-            if(board[activePos[0] + active.pattern[i][0]][activePos[1] + active.pattern[i][1] - 1] != 0){
+            if(board[activePos[0] + active.pattern[active.rotation][i][0]][activePos[1] + active.pattern[active.rotation][i][1] - 1] != 0 || activePos[1] + active.pattern[active.rotation][i][1] <= 0){
                 testBelow = true;
                 break;
             }
         }
-        if(activePos[1] <= 0 || testBelow){
+        if(testBelow){
             //set the squares in place on the board
             for(int i = 0; i < 4; i++){
-                board[activePos[0] + active.pattern[i][0]][activePos[1] + active.pattern[i][1]] = active.colour + 1;
+                board[activePos[0] + active.pattern[active.rotation][i][0]][activePos[1] + active.pattern[active.rotation][i][1]] = active.colour + 1;
             }
             //reset active to new random and to the top
             active = PATTERNS[rand() % 7];
@@ -73,7 +73,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     if((key == GLFW_KEY_D && action == GLFW_PRESS) && activePos[0] < BOARD_WIDTH - active.getWidth()){
         bool testRight = false;
         for(int i = 0; i < 4; i++){
-            if(board[activePos[0] + active.pattern[i][0] + 1][activePos[1] + active.pattern[i][1]] != 0){
+            if(board[activePos[0] + active.pattern[active.rotation][i][0] + 1][activePos[1] + active.pattern[active.rotation][i][1]] != 0){
                 testRight = true;
                 break;
             }
@@ -81,10 +81,10 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         if(!testRight)
             activePos[0]++;
     }
-    if((key == GLFW_KEY_A && action == GLFW_PRESS) && activePos[0] > 0){
+    if((key == GLFW_KEY_A && action == GLFW_PRESS)){
         bool testLeft = false;
         for(int i = 0; i < 4; i++){
-            if(board[activePos[0] + active.pattern[i][0] - 1][activePos[1] + active.pattern[i][1]] != 0){
+            if(board[activePos[0] + active.pattern[active.rotation][i][0] - 1][activePos[1] + active.pattern[active.rotation][i][1]] != 0 || activePos[0] + active.pattern[active.rotation][i][0] <= 0){
                 testLeft = true;
                 break;
             }
@@ -92,6 +92,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         if(!testLeft)
             activePos[0]--;
     }
+    if(key == GLFW_KEY_W && action == GLFW_PRESS) active.rotate();//still need to check if can rotate
     if((key == GLFW_KEY_S && action == GLFW_PRESS) || (key == GLFW_KEY_S && action == GLFW_RELEASE)) fast = !fast;
 }
 
@@ -121,10 +122,10 @@ void Render() {
     for(int i = 0; i < 4; i++){
         glColor3f(COLOURS[active.colour][0],  COLOURS[active.colour][1], COLOURS[active.colour][2]);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        glRectf(GetBoardX(activePos[0] + active.pattern[i][0]), GetBoardY(activePos[1] + active.pattern[i][1]), GetBoardX(activePos[0] + active.pattern[i][0]) + BOARD_X_UNIT, GetBoardY(activePos[1] + active.pattern[i][1]) + BOARD_Y_UNIT);
+        glRectf(GetBoardX(activePos[0] + active.pattern[active.rotation][i][0]), GetBoardY(activePos[1] + active.pattern[active.rotation][i][1]), GetBoardX(activePos[0] + active.pattern[active.rotation][i][0]) + BOARD_X_UNIT, GetBoardY(activePos[1] + active.pattern[active.rotation][i][1]) + BOARD_Y_UNIT);
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glColor3f(0.0f, 0.0f, 0.0f);
-        glRectf(GetBoardX(activePos[0] + active.pattern[i][0]), GetBoardY(activePos[1] + active.pattern[i][1]), GetBoardX(activePos[0] + active.pattern[i][0]) + BOARD_X_UNIT, GetBoardY(activePos[1] + active.pattern[i][1]) + BOARD_Y_UNIT);
+        glRectf(GetBoardX(activePos[0] + active.pattern[active.rotation][i][0]), GetBoardY(activePos[1] + active.pattern[active.rotation][i][1]), GetBoardX(activePos[0] + active.pattern[active.rotation][i][0]) + BOARD_X_UNIT, GetBoardY(activePos[1] + active.pattern[active.rotation][i][1]) + BOARD_Y_UNIT);
     }
 }
 

@@ -2,11 +2,11 @@
 
 
 namespace Patterns{
-      extern const int SQUARE_ORIENTATION[4][2];
-      extern const int LINE_ORIENTATION[4][2];
-      extern const int T_ORIENTATION[4][2];
-      extern const int L_ORIENTATION[4][2];
-      extern const int RL_ORIENTATION[4][2];
-      extern const int S_ORIENTATION[4][2];
-      extern const int Z_ORIENTATION[4][2];
+      extern const char SQUARE_ORIENTATION[4][4][2];
+      extern const char LINE_ORIENTATION[4][4][2];
+      extern const char T_ORIENTATION[4][4][2];
+      extern const char L_ORIENTATION[4][4][2];
+      extern const char RL_ORIENTATION[4][4][2];
+      extern const char S_ORIENTATION[4][4][2];
+      extern const char Z_ORIENTATION[4][4][2];
 }
