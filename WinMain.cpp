@@ -46,7 +46,7 @@ void Tick() {
 }
 
 void FixedTick() {
-    if(ticks%speed == 0 || (fast && ticks%(speed/4) == 0)){
+    if(ticks%speed == 0 || (fast && ticks%(speed/6) == 0)){
         bool testBelow = false;
         for(int i = 0; i < 4; i++){
             if(board[activePos[0] + active.pattern[active.rotation][i][0]][activePos[1] + active.pattern[active.rotation][i][1] - 1] != 0 || activePos[1] + active.pattern[active.rotation][i][1] <= 0){
@@ -59,8 +59,27 @@ void FixedTick() {
             for(int i = 0; i < 4; i++){
                 board[activePos[0] + active.pattern[active.rotation][i][0]][activePos[1] + active.pattern[active.rotation][i][1]] = active.colour + 1;
             }
+
+            for(int i = activePos[1] + active.maxY; i >= activePos[1] + active.minY; i--){
+                std::cout << "dick" << std::endl;
+                bool allFull = true;
+                for(int n = 0; n < BOARD_WIDTH; n++){//check if the row is full at this y value
+                    if(board[n][i] == 0){
+                        allFull = false;
+                        break;
+                    }
+                }
+            
+                if(allFull){
+                    for(int y = i; y < BOARD_HEIGHT - 1; y++){
+                        for(int n = 0; n < BOARD_WIDTH; n++){
+                            board[n][y] = board[n][y + 1];
+                        }
+                    }
+                }
+            }
             //reset active to new random and to the top
-            active = PATTERNS[rand() % 7];
+            active = PATTERNS[rand()%7];
             activePos[0] = 4;
             activePos[1] = 20;
         }
@@ -70,7 +89,7 @@ void FixedTick() {
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-    if((key == GLFW_KEY_D && action == GLFW_PRESS) && activePos[0] < BOARD_WIDTH - active.getWidth()){
+    if((key == GLFW_KEY_D && action == GLFW_PRESS) && activePos[0] + active.minX + (active.maxX - active.minX) < BOARD_WIDTH - 1){
         bool testRight = false;
         for(int i = 0; i < 4; i++){
             if(board[activePos[0] + active.pattern[active.rotation][i][0] + 1][activePos[1] + active.pattern[active.rotation][i][1]] != 0){
@@ -83,16 +102,30 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     }
     if((key == GLFW_KEY_A && action == GLFW_PRESS)){
         bool testLeft = false;
+
         for(int i = 0; i < 4; i++){
             if(board[activePos[0] + active.pattern[active.rotation][i][0] - 1][activePos[1] + active.pattern[active.rotation][i][1]] != 0 || activePos[0] + active.pattern[active.rotation][i][0] <= 0){
                 testLeft = true;
                 break;
             }
         }
+
         if(!testLeft)
             activePos[0]--;
     }
-    if(key == GLFW_KEY_W && action == GLFW_PRESS) active.rotate();//still need to check if can rotate
+    if(key == GLFW_KEY_W && action == GLFW_PRESS){
+        bool canRotate = true;
+        
+        for(int i = 0; i < 4; i++){
+            if(board[activePos[0] + active.pattern[active.rotation + 1 < 3?active.rotation + 1:0][i][0]][activePos[1] + active.pattern[active.rotation + 1 < 3?active.rotation + 1:0][i][1]] != 0 || activePos[0] + active.pattern[active.rotation + 1 < 3?active.rotation + 1:0][i][0] < 0 || activePos[0] + active.pattern[active.rotation + 1 < 3?active.rotation + 1:0][i][0] > BOARD_WIDTH){
+                canRotate = false;
+                break;
+            }
+        }
+
+        if(canRotate)
+            active.rotate();
+    }
     if((key == GLFW_KEY_S && action == GLFW_PRESS) || (key == GLFW_KEY_S && action == GLFW_RELEASE)) fast = !fast;
 }
 
@@ -133,7 +166,7 @@ void Init(){
     glLineWidth(4);
     
     srand (time(NULL));
-    active = PATTERNS[rand() % 7];
+    active = PATTERNS[rand()%7];
 }
 
 
