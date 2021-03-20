@@ -61,7 +61,6 @@ void FixedTick() {
             }
 
             for(int i = activePos[1] + active.maxY; i >= activePos[1] + active.minY; i--){
-                std::cout << "dick" << std::endl;
                 bool allFull = true;
                 for(int n = 0; n < BOARD_WIDTH; n++){//check if the row is full at this y value
                     if(board[n][i] == 0){
