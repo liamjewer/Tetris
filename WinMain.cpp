@@ -29,6 +29,7 @@ int board[BOARD_WIDTH][BOARD_HEIGHT] = {0};
 bool fast = false;
 
 Pattern active = PATTERNS[0];
+Pattern next = PATTERNS[0];
 int activePos[2] = {4,20};
 
 int ticks = 0;
@@ -78,7 +79,8 @@ void FixedTick() {
                 }
             }
             //reset active to new random and to the top
-            active = PATTERNS[rand()%7];
+            active = next;
+            next = PATTERNS[rand()%7];
             activePos[0] = 4;
             activePos[1] = 20;
         }
@@ -159,6 +161,15 @@ void Render() {
         glColor3f(0.0f, 0.0f, 0.0f);
         glRectf(GetBoardX(activePos[0] + active.pattern[active.rotation][i][0]), GetBoardY(activePos[1] + active.pattern[active.rotation][i][1]), GetBoardX(activePos[0] + active.pattern[active.rotation][i][0]) + BOARD_X_UNIT, GetBoardY(activePos[1] + active.pattern[active.rotation][i][1]) + BOARD_Y_UNIT);
     }
+    //render next piece]
+    for(int i = 0; i < 4; i++){
+        glColor3f(COLOURS[next.colour][0],  COLOURS[next.colour][1], COLOURS[next.colour][2]);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glRectf(GetBoardX(11 + next.pattern[next.rotation][i][0] + next.minX), GetBoardY(10 + next.pattern[next.rotation][i][1] + next.minY), GetBoardX(11 + next.pattern[next.rotation][i][0] + next.minX) + BOARD_X_UNIT, GetBoardY(10 + next.pattern[next.rotation][i][1] + next.minY) + BOARD_Y_UNIT);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glColor3f(0.0f, 0.0f, 0.0f);
+        glRectf(GetBoardX(11 + next.pattern[next.rotation][i][0] + next.minX), GetBoardY(10 + next.pattern[next.rotation][i][1] + next.minY), GetBoardX(11 + next.pattern[next.rotation][i][0] + next.minX) + BOARD_X_UNIT, GetBoardY(10 + next.pattern[next.rotation][i][1] + next.minY) + BOARD_Y_UNIT);
+    }
 }
 
 void Init(){
@@ -166,6 +177,7 @@ void Init(){
     
     srand (time(NULL));
     active = PATTERNS[rand()%7];
+    next = PATTERNS[rand()%7];
 }
 
 
